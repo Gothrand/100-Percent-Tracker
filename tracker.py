@@ -11,7 +11,6 @@ import xml.etree.ElementTree as ET
 from time import sleep
 
 # achievements and logs lists
-# THIS LIST IS MISSING SUNDERED GROVES LOG AND COMMENCEMENT LOG NAMES!!! - as of 12/14/2020
 logs = [
     "Logs.WispBody",
     "Logs.JellyfishBody",
