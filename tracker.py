@@ -175,6 +175,7 @@ def main():
         else:
             # give time for risk to save to the xml (could prolly lower this value)
             sleep(0.5)
+            lastUpdate = os.stat(file).st_mtime
             root = parseXML(userProfile)
             achievementGets = root.findtext("achievementsList").split(" ")
             for item in achievementGets:
