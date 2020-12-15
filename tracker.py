@@ -168,7 +168,6 @@ def main():
 
     print("Looking for achievements/logs...")
     # main loop.  Terminates when all logs and achievements are gotten.
-    # Issue: Keeps ignoring the first 'if' statement the moment an achievement/log is acquired
     while(obtainedLogs != logs and obtainedAchievements != achievements):
         if os.stat(userProfile).st_mtime == lastUpdate:
             continue
