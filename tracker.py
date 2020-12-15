@@ -6,9 +6,10 @@ purpose of running the category for edits in real time.
 
 Instructions to use the file pending.
 """
-import os, shutil, glob
+import os, glob
 import xml.etree.ElementTree as ET
 from time import sleep
+from collections import Counter
 
 # achievements and logs lists
 logs = [
@@ -182,6 +183,27 @@ def parseXML(path):
     root = tree.getroot()
     return root
 
+def getListDifference(list1, list2):
+    a = Counter(list1)
+    b = Counter(list2)
+    difference = a - b
+    return list(difference)
+
+def printAchivements(achievementGets):
+    achievementDifference = getListDifference(achievements, achievementGets)
+
+    print("You currently have "+str(len(achievementGets))+"/"+str(len(achievements))+" achievements.")
+    print("You currently need the following achievements: ")
+    print(achievementDifference)
+    return
+
+def printLogs(logGets):
+    logDifference = getListDifference(logs, logGets)
+
+    print("You currently have"+str(len(logGets))+"/"+str(len(logs))+" logs.")
+    print("You currently need the following logs: ")
+    print(logDifference)
+
 def main():
     lastUpdate = None
     userProfile = None
@@ -200,6 +222,7 @@ def main():
             break
     else:
         print("Could not find a profile with matching name: "+name)
+        return
 
     print("Looking for achievements/logs...")
     # main loop.  Terminates when all logs and achievements are gotten.
@@ -208,7 +231,7 @@ def main():
             continue
         else:
             # give time for risk to save to the xml (could prolly lower this value)
-            sleep(0.5)
+            sleep(0.2)
             lastUpdate = os.stat(file).st_mtime
             root = parseXML(userProfile)
             achievementGets = root.findtext("achievementsList").split(" ")
@@ -216,6 +239,7 @@ def main():
                 if item not in obtainedAchievements:
                     obtainedAchievements.append(item)
                     print("Got achievement: "+item)
+                    printAchivements(obtainedAchievements)
 
             logElements = root.findall(".//unlock")
             for element in logElements:
@@ -224,10 +248,12 @@ def main():
                     if temp[0]+'.'+temp[1]+'.'+temp[2] not in obtainedLogs:
                         obtainedLogs.append(temp[0]+'.'+temp[1]+'.'+temp[2])
                         print("Got log: "+temp[2])
+                        printLogs(obtainedLogs)
                 elif element.text.startswith("Logs"):
                     if temp[0]+'.'+temp[1] not in obtainedLogs:
                         obtainedLogs.append(temp[0]+'.'+temp[1])
                         print("Got log: "+temp[1])
+                        printLogs(obtainedLogs)
                 else:
                     continue
 
